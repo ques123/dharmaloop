@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dharma loop</title>
+  <meta name="description" content="dharma loop — a holding company for things that needed to exist.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☸</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+    :root {
+      --bg: #faf6f0;
+      --bg2: #f3ede4;
+      --fg: #2a2520;
+      --dim: #8a7e72;
+      --saffron: #e87c2a;
+      --saffron-light: #fceade;
+      --violet: #7c5cbf;
+      --violet-light: #ede5f9;
+      --rose: #d4566a;
+      --rose-light: #fce8ec;
+      --gold: #c9952c;
+      --gold-light: #fdf5e0;
+      --teal: #2a9d8f;
+      --sans: 'Space Grotesk', system-ui, sans-serif;
+      --serif: 'Newsreader', Georgia, serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── gradient blobs ── */
+    .blob-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: blobFloat 20s ease-in-out infinite alternate;
+    }
+
+    .blob-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #e87c2a 0%, transparent 70%);
+      top: -10%; left: -5%;
+      animation-delay: 0s;
+    }
+    .blob-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #7c5cbf 0%, transparent 70%);
+      top: 30%; right: -10%;
+      animation-delay: -7s;
+      animation-duration: 25s;
+    }
+    .blob-3 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, #d4566a 0%, transparent 70%);
+      bottom: -5%; left: 30%;
+      animation-delay: -14s;
+      animation-duration: 22s;
+    }
+    .blob-4 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, #2a9d8f 0%, transparent 70%);
+      top: 60%; left: -8%;
+      animation-delay: -3s;
+      animation-duration: 28s;
+    }
+
+    @keyframes blobFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -20px) scale(1.05); }
+      66% { transform: translate(-20px, 30px) scale(0.95); }
+      100% { transform: translate(15px, 15px) scale(1.02); }
+    }
+
+    /* ── main layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+    }
+
+    /* ── nav ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5rem;
+      padding: 0.5rem 0;
+    }
+
+    .nav-wordmark {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-wheel {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      animation: spin 30s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.82rem;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--saffron); }
+
+    /* ── hero ── */
+    .hero {
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .hero-wheel {
+      position: absolute;
+      top: 50%;
+      right: -5%;
+      translate: 0 -50%;
+      width: clamp(280px, 45vw, 450px);
+      height: clamp(280px, 45vw, 450px);
+      opacity: 0.07;
+      animation: spin 40s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      color: var(--fg);
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, var(--saffron), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--dim);
+      line-height: 1.7;
+      max-width: 540px;
+    }
+
+    /* ── the koan strip ── */
+    .koan-strip {
+      background: var(--fg);
+      color: var(--bg);
+      margin: 4rem -2rem 5rem;
+      padding: 2rem 2rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.8;
+      letter-spacing: 0.01em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .koan-strip::before {
+      content: '☸';
+      position: absolute;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 5rem;
+      opacity: 0.06;
+    }
+
+    .koan-strip span {
+      color: var(--saffron);
+    }
+
+    /* ── bento grid ── */
+    .bento {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 5rem;
+    }
+
+    .bento-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bento-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .bento-card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .bento-card .icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .bento-card h3 {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .bento-card p {
+      font-size: 0.82rem;
+      color: var(--dim);
+      line-height: 1.6;
+    }
+
+    /* ── project card ── */
+    .projects-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .projects-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .project-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: linear-gradient(145deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(232, 124, 42, 0.15);
+      border-radius: 24px;
+      padding: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(232, 124, 42, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+      z-index: 0;
+    }
+
+    .project-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--saffron-light), var(--violet-light), var(--rose-light));
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease-in-out infinite;
+      opacity: 0;
+      transition: opacity 0.4s;
+      border-radius: 24px;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .project-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow:
+        0 24px 80px rgba(232, 124, 42, 0.12),
+        0 12px 32px rgba(124, 92, 191, 0.06),
+        0 4px 12px rgba(0, 0, 0, 0.04);
+      border-color: var(--saffron);
+    }
+
+    .project-card:hover::before {
+      transform: scale(1.3) translate(10%, 10%);
+      opacity: 1;
+    }
+
+    .project-card:hover::after {
+      opacity: 0.35;
+    }
+
+    .project-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .project-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .project-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--saffron-light);
+      color: var(--saffron);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+    }
+
+    .project-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--saffron);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .project-arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--dim);
+      transition: all 0.3s;
+    }
+
+    .project-card:hover .project-arrow {
+      background: var(--saffron);
+      color: white;
+      transform: translateX(3px);
+    }
+
+    .project-name {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, var(--fg), var(--saffron));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--dim);
+      line-height: 1.65;
+      max-width: 480px;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .project-tags span {
+      font-family: var(--mono);
+      transition: background 0.2s, color 0.2s;
+      font-size: 0.65rem;
+      color: var(--dim);
+      background: var(--bg2);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    /* ── mantra ticker ── */
+    .ticker-wrap {
+      overflow: hidden;
+      margin: 4rem -2rem;
+      padding: 1.2rem 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .ticker {
+      display: flex;
+      gap: 3rem;
+      animation: tickerScroll 30s linear infinite;
+      width: max-content;
+    }
+
+    .ticker-item {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--dim);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .ticker-item::after {
+      content: '✦';
+      font-style: normal;
+      font-size: 0.6rem;
+      color: var(--saffron);
+      opacity: 0.5;
+    }
+
+    @keyframes tickerScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── footer ── */
+    footer {
+      margin-top: 3rem;
+      padding: 2.5rem 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      font-size: 0.78rem;
+      color: var(--dim);
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-right a {
+      font-size: 0.78rem;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover {
+      color: var(--saffron);
+    }
+
+    /* ── animations ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal:nth-child(2) { transition-delay: 0.1s; }
+    .reveal:nth-child(3) { transition-delay: 0.2s; }
+    .reveal:nth-child(4) { transition-delay: 0.3s; }
+
+    /* ── responsive ── */
+    @media (max-width: 640px) {
+      .page { padding: 2rem 1.2rem 3rem; }
+      nav { margin-bottom: 3rem; }
+      .hero { margin-bottom: 3rem; }
+      .hero-title { font-size: 2.6rem; }
+      .bento { grid-template-columns: 1fr; }
+      .koan-strip { margin: 0 -1.2rem 3rem; padding: 1.5rem 1.2rem; }
+      .ticker-wrap { margin: 3rem -1.2rem; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob-wrap">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+
+  <div class="page">
+
+    <!-- nav -->
+    <nav>
+      <div class="nav-wordmark">
+        <svg class="nav-wheel" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="42" stroke="#2a2520" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="10" stroke="#e87c2a" stroke-width="2.5"/>
+          <line x1="50" y1="8" x2="50" y2="40" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="60" x2="50" y2="92" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+          <line x1="8" y1="50" x2="40" y2="50" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+          <line x1="60" y1="50" x2="92" y2="50" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+          <line x1="20.3" y1="20.3" x2="42.9" y2="42.9" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+          <line x1="57.1" y1="57.1" x2="79.7" y2="79.7" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+          <line x1="79.7" y1="20.3" x2="57.1" y2="42.9" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+          <line x1="42.9" y1="57.1" x2="20.3" y2="79.7" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        dharma loop
+      </div>
+      <ul class="nav-links">
+        <li><a href="#projects">projects</a></li>
+        <li><a href="mailto:email@dharmaloop.com">say hi</a></li>
+      </ul>
+    </nav>
+
+    <!-- hero -->
+    <section class="hero reveal">
+      <svg class="hero-wheel" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="95" stroke="#2a2520" stroke-width="2"/>
+        <circle cx="100" cy="100" r="75" stroke="#2a2520" stroke-width="1.5"/>
+        <circle cx="100" cy="100" r="18" stroke="#e87c2a" stroke-width="2.5"/>
+        <circle cx="100" cy="100" r="6" fill="#2a2520"/>
+        <!-- 8 spokes -->
+        <line x1="100" y1="5" x2="100" y2="82" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <line x1="100" y1="118" x2="100" y2="195" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <line x1="5" y1="100" x2="82" y2="100" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <line x1="118" y1="100" x2="195" y2="100" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <line x1="32.9" y1="32.9" x2="87.3" y2="87.3" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <line x1="112.7" y1="112.7" x2="167.1" y2="167.1" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <line x1="167.1" y1="32.9" x2="112.7" y2="87.3" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <line x1="87.3" y1="112.7" x2="32.9" y2="167.1" stroke="#2a2520" stroke-width="2" stroke-linecap="round"/>
+        <!-- spoke tips / crescent curves -->
+        <path d="M 95 6 Q 100 20 105 6" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+        <path d="M 95 194 Q 100 180 105 194" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+        <path d="M 6 95 Q 20 100 6 105" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+        <path d="M 194 95 Q 180 100 194 105" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+        <path d="M 30 36 Q 40 40 36 30" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+        <path d="M 170 164 Q 160 160 164 170" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+        <path d="M 164 30 Q 160 40 170 36" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+        <path d="M 36 170 Q 40 160 30 164" stroke="#2a2520" stroke-width="1.5" fill="none"/>
+      </svg>
+      <h1 class="hero-title">
+        projects<br>
+        with a <span class="highlight">karmic</span><br>
+        tendency to ship
+      </h1>
+      <p class="hero-sub">
+        dharma loop is a company for software that wanted to exist.
+        we build small, opinionated tools — the kind of stuff that starts as
+        a weekend hack and accidentally becomes someone's daily driver.
+      </p>
+    </section>
+
+    <!-- projects -->
+    <section id="projects">
+      <div class="projects-label">projects</div>
+
+      <a href="https://reallybigcalendar.com" target="_blank" rel="noopener" class="project-card reveal">
+        <div class="project-top">
+          <div class="project-badge"><span class="dot"></span> live</div>
+          <div class="project-arrow">→</div>
+        </div>
+        <div class="project-name">Really Big Calendar</div>
+        <p class="project-desc">
+          a year-at-a-glance calendar that actually uses your whole screen.
+          because time is a flat circle and you should be able to see all of it.
+        </p>
+        <div class="project-tags">
+          <span>react</span>
+          <span>web app</span>
+          <span>productivity</span>
+          <span>vibes</span>
+        </div>
+      </a>
+    </section>
+
+    <!-- koan strip -->
+    <div class="koan-strip reveal">
+      <span>$</span> the wheel turns. the code compiles.<br>
+      <span>$</span> attachment causes suffering. so does untyped javascript.
+    </div>
+
+    <!-- bento -->
+    <div class="bento">
+      <div class="bento-card reveal">
+        <div class="icon-badge" style="background: var(--saffron-light); color: var(--saffron);">☸</div>
+        <h3>right livelihood</h3>
+        <p>building things that are useful, not extractive. no dark patterns, no attention hijacking, no growth-at-all-costs.</p>
+      </div>
+      <div class="bento-card reveal">
+        <div class="icon-badge" style="background: var(--violet-light); color: var(--violet);">∞</div>
+        <h3>infinite games</h3>
+        <p>we play to keep playing. sustainable side projects that compound over time. no VC, no exit strategy, just vibes and version bumps.</p>
+      </div>
+      <div class="bento-card reveal">
+        <div class="icon-badge" style="background: var(--rose-light); color: var(--rose);">◈</div>
+        <h3>beginner's mind</h3>
+        <p>every project starts with "what if." every architecture decision includes "but why." the docs are good, actually.</p>
+      </div>
+      <div class="bento-card reveal">
+        <div class="icon-badge" style="background: var(--gold-light); color: var(--gold);">⬡</div>
+        <h3>ship > meditate</h3>
+        <p>contemplation is great but at some point you gotta push to main. enlightenment is just a really clean deploy.</p>
+      </div>
+    </div>
+
+    <!-- ticker -->
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span class="ticker-item">form is emptiness</span>
+        <span class="ticker-item">emptiness is form</span>
+        <span class="ticker-item">npm install --save enlightenment</span>
+        <span class="ticker-item">the dao that can be named is not the eternal dao</span>
+        <span class="ticker-item">but we named the LLC anyway</span>
+        <span class="ticker-item">samsara has good error handling</span>
+        <span class="ticker-item">form is emptiness</span>
+        <span class="ticker-item">emptiness is form</span>
+        <span class="ticker-item">npm install --save enlightenment</span>
+        <span class="ticker-item">the dao that can be named is not the eternal dao</span>
+        <span class="ticker-item">but we named the LLC anyway</span>
+        <span class="ticker-item">samsara has good error handling</span>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <footer>
+      <div class="footer-left">© 2024 dharma loop llc</div>
+      <div class="footer-right">
+        <a href="mailto:email@dharmaloop.com">email@dharmaloop.com</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // intersection observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
