@@ -10,16 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy via SSH
-        env:
-          SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+      - name: Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Deploy via rsync over Tailscale
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 204.168.144.204 >> ~/.ssh/known_hosts 2>/dev/null
           rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+            -e "ssh -o StrictHostKeyChecking=accept-new" \
             --exclude '.git' \
             --exclude '.github' \
-            ./ root@204.168.144.204:/var/www/dharmaloop/
+            ./ root@abacus:/var/www/dharmaloop/
