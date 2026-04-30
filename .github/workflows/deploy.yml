@@ -24,4 +24,4 @@ jobs:
             -e "ssh -o StrictHostKeyChecking=accept-new" \
             --exclude '.git' \
             --exclude '.github' \
-            ./ root@abacus:/var/www/dharmaloop/
+            ./ root@babbage:/var/www/dharmaloop/
